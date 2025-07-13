@@ -1,4 +1,5 @@
 import uuid
+from datetime import timedelta
 from typing import TYPE_CHECKING
 
 from django.db import models
@@ -25,11 +26,11 @@ class RepairJob(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open')
     image = CloudinaryField('media', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    bid_deadline = models.DateTimeField(default=timezone.now)
+    bid_deadline = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        if not self.bid_deadline:
-            self.bid_deadline = timezone.now() + timezone.timedelta(hours=48)
+        if self.bid_deadline is None:
+            self.bid_deadline = timezone.now() + timedelta(hours=48)
         super().save(*args, **kwargs)
 
     def __str__(self):

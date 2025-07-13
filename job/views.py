@@ -9,6 +9,7 @@ from job.serializers import RepairJobSerializer
 class JobCreateView(generics.CreateAPIView):
     serializer_class = RepairJobSerializer
     permission_classes = [permissions.IsAuthenticated]
+    queryset = RepairJob.objects.all()
 
     def perform_create(self, serializer):
         serializer.save(customer=self.request.user, status='open')

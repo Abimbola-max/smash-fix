@@ -138,7 +138,6 @@ CLOUDINARY_STORAGE = {
         'API_SECRET': os.getenv("API_SECRET"),
    }
 
-print("Cloudinary API Key:", os.getenv("API_KEY"))
 
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
@@ -151,9 +150,6 @@ cloudinary.config(
     api_secret=os.getenv('API_SECRET'),
     secure=True
 )
-print("Cloudinary API Key:", os.getenv('API_KEY'))
-print("Cloudinary Cloud Name:", os.getenv('CLOUD_NAME'))
-print("Cloudinary API Secret:", os.getenv('API_SECRET'))
 
 
 
