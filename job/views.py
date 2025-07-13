@@ -35,8 +35,13 @@ class JobListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        # Customers see their own jobs
-        return RepairJob.objects.filter(customer=self.request.user)
+        user = self.request.user
+        if user.user_type == 'customer':
+            return RepairJob.objects.filter(customer=user)
+        elif user.user_type == 'repairer':
+            return RepairJob.objects.all()
+        return RepairJob.objects.none()
+
 
 class JobDetailView(generics.RetrieveAPIView):
     serializer_class = RepairJobSerializer
@@ -61,12 +66,10 @@ class AcceptBidView(generics.UpdateAPIView):
         except Bid.DoesNotExist:
             return Response({'error': 'Bid not found'}, status=404)
 
-        # Update all bids statuses
         job.bids.update(status='rejected')
         bid.status = 'accepted'
         bid.save()
 
-        # Update job status
         job.status = 'assigned'
         job.save()
 
