@@ -9,10 +9,18 @@ from job.serializers import RepairJobSerializer
 class JobCreateView(generics.CreateAPIView):
     serializer_class = RepairJobSerializer
     permission_classes = [permissions.IsAuthenticated]
-    queryset = RepairJob.objects.all()
+    # queryset = RepairJob.objects.all()
 
     def perform_create(self, serializer):
         serializer.save(customer=self.request.user, status='open')
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.user_type == 'customer':
+            return RepairJob.objects.filter(customer=user)
+        elif user.user_type == 'repairer':
+            return RepairJob.objects.all()
+        return RepairJob.objects.none()
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
